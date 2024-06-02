@@ -5,9 +5,9 @@ const { exec } = require('child_process');
 const express = require('express');
 const axios = require('axios');
 const logger = require('../logger');
-const LifeRaft = require('@markwylde/liferaft');
+const MyRaft = require('./MyRaft'); 
 const WinstonTransport = require('./winstonTransportLayer');
-const kvStore = require('../utils/kvStore'); // Import the kvStore module
+const kvStore = require('../utils/kvStore'); 
 
 const app = express();
 app.use(bodyParser.json());
@@ -40,15 +40,16 @@ const peers = config.DNs.flatMap(dn => dn.servers)
                         .map(server => `http://localhost:${server.port}`);
 
 // Initialize Raft node
-const raft = new LifeRaft({
+const raft = new MyRaft({
   address: `http://localhost:${port}`,
-  'election min': '1 second',  // Increased election min timeout
-  'election max': '5 seconds',  // Increased election max timeout
+  'election min': '3 seconds',  
+  'election max': '6 seconds',  
   Log: WinstonTransport,
-  logger: logger
+  logger: logger, // Pass the logger
+  peers: peers 
 });
 
-// Log Raft events
+
 raft.on('term change', (term) => {
   logger.info(`Node ${nodeId} - Term changed to ${term}`);
 });
@@ -65,7 +66,7 @@ raft.on('leader change', (leader) => {
   }
 });
 
-// Raft endpoint to handle incoming messages
+
 app.post('/raft', (req, res) => {
   logger.info(`Node ${nodeId} - Received Raft message: ${JSON.stringify(req.body)}`);
   raft.emit(req.body.type, req.body);
@@ -95,25 +96,23 @@ raft.on('heartbeat timeout', () => {
 // Handle vote requests
 raft.on('vote', (vote) => {
   logger.info(`Node ${nodeId} - Received vote request from ${vote.address}`);
-  // Automatically vote yes for simplicity, in a real scenario, you might want to add conditions
+  const voteGranted = true; // or add logic to determine if the vote should be granted
   raft.emit('vote response', {
     address: vote.address,
     term: vote.term,
-    voteGranted: true
+    voteGranted: voteGranted
   });
 });
 
-// Handle leader state
+// Handle state changes
 raft.on('leader', () => {
   logger.info(`Node ${nodeId} - I am the leader`);
 });
 
-// Handle follower state
 raft.on('follower', () => {
   logger.info(`Node ${nodeId} - I am a follower`);
 });
 
-// Handle candidate state
 raft.on('candidate', () => {
   logger.info(`Node ${nodeId} - I am a candidate`);
 });

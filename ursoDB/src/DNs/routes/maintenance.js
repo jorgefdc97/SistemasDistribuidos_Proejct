@@ -7,14 +7,6 @@ const dataNodes = ['dn00', 'dn01', 'dn02', 'dn03']; // Example data node server 
 
 router.post('/', async (req, res) => {
   try {
-    // Example maintenance actions:
-    // 1. Check data consistency
-    // 2. Propagate updates
-    // 3. Resolve conflicts
-    // 4. Rebalance data distribution
-    // Add your specific maintenance actions here
-
-    // Example: Propagate updates to ensure synchronization
     const updatePromises = dataNodes.map(async (dataNode) => {
       // Send HTTP request to each data node server's maintenance endpoint
       const response = await axios.post(`http://${dataNode}/maintenance`, req.body);

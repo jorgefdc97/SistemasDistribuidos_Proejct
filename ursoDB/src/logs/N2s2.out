@@ -1,0 +1,197 @@
+2024-06-02 23:52:27,  [32minfo[39m, /*code,*/ Node N2s2 - Joining peer at http://localhost:3200
+2024-06-02 23:52:27,  [32minfo[39m, /*code,*/ Node N2s2 - Joining peer at http://localhost:3210
+2024-06-02 23:52:27,  [32minfo[39m, /*code,*/ Node N2s2 - Joining peer at http://localhost:3230
+2024-06-02 23:52:27,  [32minfo[39m, /*code,*/ DN server running on port 3220 as N2s2
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":1,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 1, voteGranted: true
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Stepped down to follower for term 1
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":2,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 2, voteGranted: true
+2024-06-02 23:52:30,  [32minfo[39m, /*code,*/ Stepped down to follower for term 2
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":3,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 3, voteGranted: true
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Stepped down to follower for term 3
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":4,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 4, voteGranted: true
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Stepped down to follower for term 4
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - Heartbeat timeout, promoting to candidate
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 5
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 6
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:31,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":7,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 7, voteGranted: true
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Stepped down to follower for term 7
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 7
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":8,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 8, voteGranted: true
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Stepped down to follower for term 8
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:32,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 8
+2024-06-02 23:52:34,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":9,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:34,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:34,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 9, voteGranted: true
+2024-06-02 23:52:34,  [32minfo[39m, /*code,*/ Stepped down to follower for term 9
+2024-06-02 23:52:34,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:34,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 9
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 10
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":11,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 11, voteGranted: true
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Stepped down to follower for term 11
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 11
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":12,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 12, voteGranted: true
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Stepped down to follower for term 12
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:35,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 12
+2024-06-02 23:52:39,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":13,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:39,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:39,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 13, voteGranted: true
+2024-06-02 23:52:39,  [32minfo[39m, /*code,*/ Stepped down to follower for term 13
+2024-06-02 23:52:39,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:39,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 13
+2024-06-02 23:52:40,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":14,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:40,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:40,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 14, voteGranted: true
+2024-06-02 23:52:40,  [32minfo[39m, /*code,*/ Stepped down to follower for term 14
+2024-06-02 23:52:40,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:40,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 14
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 15
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":16,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 16, voteGranted: true
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Stepped down to follower for term 16
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:41,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 16
+2024-06-02 23:52:42,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":17,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:42,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:42,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 17, voteGranted: true
+2024-06-02 23:52:42,  [32minfo[39m, /*code,*/ Stepped down to follower for term 17
+2024-06-02 23:52:42,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:42,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 17
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 18
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":19,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 19, voteGranted: true
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Stepped down to follower for term 19
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:45,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 19
+2024-06-02 23:52:46,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":20,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:46,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:46,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 20, voteGranted: true
+2024-06-02 23:52:46,  [32minfo[39m, /*code,*/ Stepped down to follower for term 20
+2024-06-02 23:52:46,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:46,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 20
+2024-06-02 23:52:47,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":21,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:47,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:47,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 21, voteGranted: true
+2024-06-02 23:52:47,  [32minfo[39m, /*code,*/ Stepped down to follower for term 21
+2024-06-02 23:52:47,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:47,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 21
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":22,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 22, voteGranted: true
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Stepped down to follower for term 22
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 22
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":23,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 23, voteGranted: true
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Stepped down to follower for term 23
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:50,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 23
+2024-06-02 23:52:51,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:52:51,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 24
+2024-06-02 23:52:51,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:51,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:51,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:53,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":25,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:53,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:53,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 25, voteGranted: true
+2024-06-02 23:52:53,  [32minfo[39m, /*code,*/ Stepped down to follower for term 25
+2024-06-02 23:52:53,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:53,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 25
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":26,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 26, voteGranted: true
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Stepped down to follower for term 26
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 26
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 27
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:54,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:55,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":28,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:55,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:55,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 28, voteGranted: true
+2024-06-02 23:52:55,  [32minfo[39m, /*code,*/ Stepped down to follower for term 28
+2024-06-02 23:52:55,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:55,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 28
+2024-06-02 23:52:57,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":29,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:57,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:52:57,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 29, voteGranted: true
+2024-06-02 23:52:57,  [32minfo[39m, /*code,*/ Stepped down to follower for term 29
+2024-06-02 23:52:57,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:57,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 29
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 30
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":31,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 31, voteGranted: true
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Stepped down to follower for term 31
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:58,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 31
+2024-06-02 23:52:59,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":32,"address":"http://localhost:3210","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:52:59,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3210
+2024-06-02 23:52:59,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3210 for term 32, voteGranted: true
+2024-06-02 23:52:59,  [32minfo[39m, /*code,*/ Stepped down to follower for term 32
+2024-06-02 23:52:59,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:52:59,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 32
+2024-06-02 23:53:01,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":33,"address":"http://localhost:3230","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:53:01,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3230
+2024-06-02 23:53:01,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3230 for term 33, voteGranted: true
+2024-06-02 23:53:01,  [32minfo[39m, /*code,*/ Stepped down to follower for term 33
+2024-06-02 23:53:01,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:53:01,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 33
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Node N2s2 - Received Raft message: {"state":2,"term":34,"address":"http://localhost:3200","type":"vote","leader":"","last":{"index":0,"term":0,"data":null}}
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Node N2s2 - Received vote request from http://localhost:3200
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Received vote response from http://localhost:3200 for term 34, voteGranted: true
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Stepped down to follower for term 34
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Node N2s2 - I am the leader
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Node http://localhost:3220 - Elected as leader for term 34
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Node N2s2 - I am a candidate
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Node N2s2 - Term changed to 35
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3200
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3230
+2024-06-02 23:53:03,  [32minfo[39m, /*code,*/ Packet sent to http://localhost:3210
