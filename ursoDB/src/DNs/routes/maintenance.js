@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
   try {
     const updatePromises = dataNodes.map(async (dataNode) => {
       // Send HTTP request to each data node server's maintenance endpoint
-      const response = await axios.post(`http://${dataNode}/maintenance`, req.body);
+      const response = await axios.post(`http://localhost:4000/${dataNode}/maintenance`, req.body);
       return response.data; // Assuming response indicates success or failure
     });
 
