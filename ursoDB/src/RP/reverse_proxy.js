@@ -10,13 +10,15 @@ const port = config.RP.port;
 
 app.use(express.json());
 
-const adminRoute = require('./routes/admin');
-const dbRoute = require('./routes/db');
-const setMasterRoute = require('./routes/set_master');
-const statsRoute = require('./routes/stats');
-const statusRoute = require('./routes/status');
-const stopRoute = require('./routes/stop');
+// Import routes
+var adminRoute = require('./routes/admin');
+var dbRoute = require('./routes/db');
+var setMasterRoute = require('./routes/set_master');
+var statsRoute = require('./routes/stats');
+var statusRoute = require('./routes/status');
+var stopRoute = require('./routes/stop');
 
+// Use routes
 app.use('/admin', adminRoute);
 app.use('/db', dbRoute);
 app.use('/set_master', setMasterRoute);
@@ -89,6 +91,18 @@ function re_direct(req, res, next) {
     proxy(server.host)(req, res, next);
   }
 }
+
+app.get('/', (req, res) => {
+  res.send(`
+  <head>
+    <title>Express</title>
+  </head>
+  <body>
+    <h1>Express</h1>
+    <p>Welcome to Express</p>
+  </body>
+</html>`);
+});
 
 app.use('/api', re_direct);
 

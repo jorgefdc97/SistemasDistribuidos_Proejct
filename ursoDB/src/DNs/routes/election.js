@@ -4,8 +4,7 @@ const Liferaft = require('@markwylde/liferaft');
 const axios = require('axios');
 const logger = require('../../logger'); // Adjust the path according to your structure
 
-// URL of reverse proxy where /set_master is hosted
-const reverseProxyUrl = 'http://localhost:3000'; // Replace with actual URL
+const reverseProxyUrl = 'http://localhost:4000';
 
 // Configure the Raft node
 const raftNode = new Liferaft({
