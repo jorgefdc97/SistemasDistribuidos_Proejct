@@ -1,11 +1,15 @@
-const fs = require('fs');
+const { exec } = require('child_process');
 const express = require('express');
 const axios = require('axios');
 const logger = require('../logger');
-const { exec } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+// Load configuration
+const configPath = path.resolve(__dirname, '../configure.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 const app = express();
-const config = JSON.parse(fs.readFileSync('configure.json', 'utf8'));
 const port = config.RP.port;
 
 app.use(express.json());
@@ -24,6 +28,12 @@ app.use('/stats', statsRoute);
 app.use('/status', statusRoute);
 app.use('/stop', stopRoute);
 
+// Ensure the logs directory exists
+const logsDir = path.resolve(__dirname, '../logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir);
+}
+
 // Initialize servers from configure.json
 let servers = {};
 config.DNs.forEach((dn, dnIndex) => {
@@ -34,27 +44,30 @@ config.DNs.forEach((dn, dnIndex) => {
       host: `http://${server.host}:${server.port}`,
       usage: 0
     };
-
-    // Start each node using forever
-    const env = { NODE_ID: server.name };
-    const command = `forever start -c "node" DNs/app.js`;
-
-    const nodeProcess = exec(command, { env: { ...process.env, ...env } }, (error, stdout, stderr) => {
-      if (error) {
-        logger.error(`[${server.name}] error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        logger.error(`[${server.name}] stderr: ${stderr}`);
-      }
-      logger.info(`[${server.name}] stdout: ${stdout}`);
-    });
-
-    nodeProcess.on('close', (code) => {
-      logger.info(`[${server.name}] process exited with code ${code}`);
-    });
   });
 });
+
+// Start all nodes using forever
+const startNodes = () => {
+  config.DNs.forEach(dn => {
+    dn.servers.forEach(server => {
+      const command = `forever start -a -l "logs/${server.name}.log" -o "logs/${server.name}.out" -e "logs/${server.name}.err" --minUptime 1000 --spinSleepTime 1000 -c "node" DNs/app.js`;
+      exec(command, { env: { NODE_ID: server.name } }, (err, stdout, stderr) => {
+        if (err) {
+          logger.error(`Error starting node ${server.name}: ${err.message}`);
+          return;
+        }
+        if (stderr) {
+          logger.error(`Error output for node ${server.name}: ${stderr}`);
+        }
+        logger.info(`Node ${server.name} started successfully.`);
+      });
+    });
+  });
+};
+
+// Start nodes when the proxy starts
+startNodes();
 
 // Proxy function to redirect requests
 const proxy = (url) => {

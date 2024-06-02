@@ -1,27 +1,32 @@
-const express = require('express');
 const bodyParser = require('body-parser');
-const LifeRaft = require('@markwylde/liferaft');
 const path = require('path');
 const fs = require('fs');
+const { exec } = require('child_process');
+const express = require('express');
 const axios = require('axios');
-const WinstonTransport = require('./winstonTransportLayer');
 const logger = require('../logger');
-const adminRoute = require('./routes/admin');
-const dbRoute = require('./routes/db');
-const electionRoute = require('./routes/election');
-const maintenanceRoute = require('./routes/maintenance');
-const statsRoute = require('./routes/stats');
-const statusRoute = require('./routes/status');
-const stopRoute = require('./routes/stop');
-const indexRoute = require('./routes/index');
+const LifeRaft = require('@markwylde/liferaft');
+const WinstonTransport = require('./winstonTransportLayer');
+const kvStore = require('../utils/kvStore'); // Import the kvStore module
 
 const app = express();
 app.use(bodyParser.json());
+app.use(express.json());
+
+const adminRoute = require('./routes/admin');
+const dbRoute = require('./routes/db');
+const statsRoute = require('./routes/stats');
+const statusRoute = require('./routes/status');
+const stopRoute = require('./routes/stop');
+
+app.use('/admin', adminRoute);
+app.use('/db', dbRoute);
+app.use('/stats', statsRoute);
+app.use('/status', statusRoute);
+app.use('/stop', stopRoute);
 
 // Load configuration
-const configPath = path.resolve(__dirname, '../configure.json');
-const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-
+const config = JSON.parse(fs.readFileSync('configure.json', 'utf8'));
 const nodeId = process.env.NODE_ID || 'node1';
 const nodeConfig = config.DNs.flatMap(dn => dn.servers).find(server => server.name === nodeId);
 
@@ -31,28 +36,16 @@ if (!nodeConfig) {
 
 const port = nodeConfig.port;
 const peers = config.DNs.flatMap(dn => dn.servers)
-                        .filter(server => server.name !== nodeId)
-                        .map(server => `http://localhost:${server.port}/raft`);
+                        .filter(server => server.name !== nodeId && server.name.startsWith(nodeConfig.name.split('s')[0]))
+                        .map(server => `http://localhost:${server.port}`);
 
 // Initialize Raft node
 const raft = new LifeRaft({
-  address: `tcp://localhost:${port}`,
-  'election min': '200 millisecond',
-  'election max': '1 second',
+  address: `http://localhost:${port}`,
+  'election min': '1 second',  // Increased election min timeout
+  'election max': '5 seconds',  // Increased election max timeout
   Log: WinstonTransport,
   logger: logger
-});
-
-// Join the raft cluster asynchronously
-peers.forEach(peer => {
-  raft.join(peer, async (packet) => {
-    try {
-      await axios.post(peer, packet);
-      logger.info(`Packet sent to ${peer}: ${JSON.stringify(packet)}`);
-    } catch (error) {
-      logger.error(`Error sending packet to ${peer}: ${error.message}`);
-    }
-  });
 });
 
 // Log Raft events
@@ -62,11 +55,10 @@ raft.on('term change', (term) => {
 
 raft.on('leader change', (leader) => {
   logger.info(`Node ${nodeId} - Leader changed to ${leader}`);
-  if (nodeId === leader) {
-    // If this node is the leader, announce it to the RP
+  if (raft.address === leader) {
     const rpConfig = config.RP;
-    axios.get(`http://${rpConfig.host}:${rpConfig.port}/set_master`, {
-      params: { leader: nodeId }
+    axios.post(`http://${rpConfig.host}:${rpConfig.port}/set_master`, {
+      masterId: nodeId
     }).catch(error => {
       logger.error('Error announcing leader:', error.message);
     });
@@ -75,22 +67,61 @@ raft.on('leader change', (leader) => {
 
 // Raft endpoint to handle incoming messages
 app.post('/raft', (req, res) => {
-  raft.emit(req.body.type, req.body, res);
+  logger.info(`Node ${nodeId} - Received Raft message: ${JSON.stringify(req.body)}`);
+  raft.emit(req.body.type, req.body);
+  res.status(200).send();
 });
 
-app.use('/', indexRoute);
-app.use('/admin', adminRoute);
-app.use('/db', dbRoute);
-app.use('/election', electionRoute);
-app.use('/maintenance', maintenanceRoute);
-app.use('/stats', statsRoute);
-app.use('/status', statusRoute);
-app.use('/stop', stopRoute);
+// Join the raft cluster
+peers.forEach(peer => {
+  logger.info(`Node ${nodeId} - Joining peer at ${peer}`);
+  raft.join(peer, (packet) => {
+    axios.post(`${peer}/raft`, packet)
+      .then(response => {
+        logger.info(`Packet sent to ${peer}`);
+      })
+      .catch(error => {
+        logger.error(`Error sending packet to ${peer}: ${error.message}`);
+      });
+  });
+});
+
+// Handle heartbeat timeout
+raft.on('heartbeat timeout', () => {
+  logger.info(`Node ${nodeId} - Heartbeat timeout, promoting to candidate`);
+  raft.promote();
+});
+
+// Handle vote requests
+raft.on('vote', (vote) => {
+  logger.info(`Node ${nodeId} - Received vote request from ${vote.address}`);
+  // Automatically vote yes for simplicity, in a real scenario, you might want to add conditions
+  raft.emit('vote response', {
+    address: vote.address,
+    term: vote.term,
+    voteGranted: true
+  });
+});
+
+// Handle leader state
+raft.on('leader', () => {
+  logger.info(`Node ${nodeId} - I am the leader`);
+});
+
+// Handle follower state
+raft.on('follower', () => {
+  logger.info(`Node ${nodeId} - I am a follower`);
+});
+
+// Handle candidate state
+raft.on('candidate', () => {
+  logger.info(`Node ${nodeId} - I am a candidate`);
+});
 
 // Create a key-value pair
 app.post('/db/c', (req, res) => {
   const { key, value } = req.body;
-  const result = db.createKeyValuePair(key, value);
+  const result = kvStore.createKeyValuePair(key, value); // Use the kvStore module
   logger.info(`Created key-value pair: ${key} - ${JSON.stringify(value)}`);
   res.json(result);
 });
@@ -98,7 +129,7 @@ app.post('/db/c', (req, res) => {
 // Read the value associated with a key
 app.get('/db/r/:key', (req, res) => {
   const { key } = req.params;
-  const value = db.readValueByKey(key);
+  const value = kvStore.readValueByKey(key); // Use the kvStore module
   if (value !== null) {
     logger.info(`Read value for key: ${key}`);
     res.json(value);
@@ -112,7 +143,7 @@ app.get('/db/r/:key', (req, res) => {
 app.put('/db/u/:key', (req, res) => {
   const { key } = req.params;
   const newValue = req.body;
-  const result = db.updateValueByKey(key, newValue);
+  const result = kvStore.updateValueByKey(key, newValue); // Use the kvStore module
   if (result !== null) {
     logger.info(`Updated value for key: ${key}`);
     res.json(result);
@@ -125,7 +156,7 @@ app.put('/db/u/:key', (req, res) => {
 // Delete a key-value pair
 app.delete('/db/d/:key', (req, res) => {
   const { key } = req.params;
-  const success = db.deleteKeyValuePair(key);
+  const success = kvStore.deleteKeyValuePair(key); // Use the kvStore module
   if (success) {
     logger.info(`Deleted key-value pair: ${key}`);
     res.send('Key-value pair deleted');

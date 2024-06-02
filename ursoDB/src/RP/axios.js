@@ -2,7 +2,7 @@ const axios = require('axios').default;
 //axios test
 //-----------------------------------------
 
-axios.get('http://localhost:3000/users')
+axios.get('http://localhost:4000/')
   .then(function (response) {
     // handle success
     console.log(response);
