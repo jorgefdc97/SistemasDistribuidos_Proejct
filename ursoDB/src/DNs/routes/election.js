@@ -6,6 +6,7 @@ const logger = require('../../logger'); // Adjust the path according to your str
 
 const reverseProxyUrl = 'http://localhost:4000';
 
+
 // Configure the Raft node
 const raftNode = new Liferaft({
   id: 'dataNode', // Unique ID for the node

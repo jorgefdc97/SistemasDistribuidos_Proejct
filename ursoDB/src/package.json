@@ -12,6 +12,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "forever start RP/reverse_proxy.js",
-    "startNode": "node data_nodes/app.js"
+    "startNode": "node DNs/app.js"
   }
 }
