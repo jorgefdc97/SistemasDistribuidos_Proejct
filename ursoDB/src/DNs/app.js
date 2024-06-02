@@ -1,12 +1,11 @@
 const express = require('express');
-const logger = require('../logger');
-const db = require('./routes/db');
-
-const app = express();
-const port = config.DNs[0].servers[0].port;  // Adjust index as needed
-
-app.use(express.json());
+const bodyParser = require('body-parser');
 const LifeRaft = require('@markwylde/liferaft');
+const path = require('path');
+const fs = require('fs');
+const axios = require('axios');
+const WinstonTransport = require('./winstonTransportLayer');
+const logger = require('../logger');
 const adminRoute = require('./routes/admin');
 const dbRoute = require('./routes/db');
 const electionRoute = require('./routes/election');
@@ -16,23 +15,67 @@ const statusRoute = require('./routes/status');
 const stopRoute = require('./routes/stop');
 const indexRoute = require('./routes/index');
 
-class WinstonTransport {
-  constructor(options) {
-    this.logger = options.logger;
-  }
+const app = express();
+app.use(bodyParser.json());
 
-  append(entry) {
-    this.logger.info(entry);
-  }
+// Load configuration
+const configPath = path.resolve(__dirname, '../configure.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+const nodeId = process.env.NODE_ID || 'node1';
+const nodeConfig = config.DNs.flatMap(dn => dn.servers).find(server => server.name === nodeId);
+
+if (!nodeConfig) {
+  throw new Error(`Node configuration not found for NODE_ID ${nodeId}`);
 }
-// Raft Configuration
-raft = new LifeRaft({
-  'address': `tcp://localhost:${port}`,
+
+const port = nodeConfig.port;
+const peers = config.DNs.flatMap(dn => dn.servers)
+                        .filter(server => server.name !== nodeId)
+                        .map(server => `http://localhost:${server.port}/raft`);
+
+// Initialize Raft node
+const raft = new LifeRaft({
+  address: `tcp://localhost:${port}`,
   'election min': '200 millisecond',
   'election max': '1 second',
-  adapter: WinstonTransport,
-  path: './db/log1',
+  Log: WinstonTransport,
   logger: logger
+});
+
+// Join the raft cluster asynchronously
+peers.forEach(peer => {
+  raft.join(peer, async (packet) => {
+    try {
+      await axios.post(peer, packet);
+      logger.info(`Packet sent to ${peer}: ${JSON.stringify(packet)}`);
+    } catch (error) {
+      logger.error(`Error sending packet to ${peer}: ${error.message}`);
+    }
+  });
+});
+
+// Log Raft events
+raft.on('term change', (term) => {
+  logger.info(`Node ${nodeId} - Term changed to ${term}`);
+});
+
+raft.on('leader change', (leader) => {
+  logger.info(`Node ${nodeId} - Leader changed to ${leader}`);
+  if (nodeId === leader) {
+    // If this node is the leader, announce it to the RP
+    const rpConfig = config.RP;
+    axios.get(`http://${rpConfig.host}:${rpConfig.port}/set_master`, {
+      params: { leader: nodeId }
+    }).catch(error => {
+      logger.error('Error announcing leader:', error.message);
+    });
+  }
+});
+
+// Raft endpoint to handle incoming messages
+app.post('/raft', (req, res) => {
+  raft.emit(req.body.type, req.body, res);
 });
 
 app.use('/', indexRoute);
@@ -94,7 +137,8 @@ app.delete('/db/d/:key', (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  logger.info(`DN server running on port ${port} as ${nodeId}`);
+  raft.emit('initialize');
 });
 
 module.exports = app;

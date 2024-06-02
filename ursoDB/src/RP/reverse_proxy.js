@@ -1,11 +1,11 @@
 const fs = require('fs');
-const config = JSON.parse(fs.readFileSync('configure.json', 'utf8'));
-
 const express = require('express');
 const axios = require('axios');
 const logger = require('../logger');
+const { exec } = require('child_process');
 
 const app = express();
+const config = JSON.parse(fs.readFileSync('configure.json', 'utf8'));
 const port = config.RP.port;
 
 app.use(express.json());
@@ -34,6 +34,25 @@ config.DNs.forEach((dn, dnIndex) => {
       host: `http://${server.host}:${server.port}`,
       usage: 0
     };
+
+    // Start each node using forever
+    const env = { NODE_ID: server.name };
+    const command = `forever start -c "node" DNs/app.js`;
+
+    const nodeProcess = exec(command, { env: { ...process.env, ...env } }, (error, stdout, stderr) => {
+      if (error) {
+        logger.error(`[${server.name}] error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        logger.error(`[${server.name}] stderr: ${stderr}`);
+      }
+      logger.info(`[${server.name}] stdout: ${stdout}`);
+    });
+
+    nodeProcess.on('close', (code) => {
+      logger.info(`[${server.name}] process exited with code ${code}`);
+    });
   });
 });
 
@@ -82,7 +101,7 @@ app.use('/stat', (req, res) => {
     host: server.host,
     usage: server.usage
   }));
-  
+
   console.table(stats);
 
   res.status(200).send({
@@ -99,141 +118,4 @@ app.listen(port, () => {
   logger.info(`Reverse proxy server running on port ${port}`);
 });
 
-
-/*app.listen(4000, () => {
-
-  request('http://localhost:3000', function (err, res, body) {
-
-	  //if(err) console.log( "err:", err );
-	  ////if(res) console.log( "res:", res );
-	  //console.log( "body:", body );
-    // a -rem in json for comments, but too big
-   if(err === null){
-
-        console.log('frontend is reachable from proxy server')
-
-   }
-   else{
-
-    console.log('frontend is NOT reachable from proxy server')
-
-   }
-
-  });
-
-});*/
-/*
-// Synchronous readFile function
-function readFile(key, callback) {
-  try {
-    const data = fs.readFileSync(`${key}.json`, 'utf8');
-    callback(null, JSON.parse(data));
-  } catch (error) {
-    callback(error, null);
-  }
-}
-// Asynchronous readFile function
-async function readFileAsync(key, callback) {
-  try {
-    const data = await new Promise((resolve, reject) => {
-      fs.readFile(`${key}.json`, 'utf8', (err, data) => {
-        if (err) reject(err);
-        else resolve(data);
-      });
-    });
-    callback(null, JSON.parse(data));
-  } catch (error) {
-    callback(error, null);
-  }
-}
-// Synchronous updateFile function
-function updateFile(key, newData, callback) {
-  try {
-    const data = fs.readFileSync(`${key}.json`, 'utf8');
-    const parsedData = JSON.parse(data);
-    Object.assign(parsedData, newData);
-    fs.writeFileSync(`${key}.json`, JSON.stringify(parsedData));
-    callback(null);
-  } catch (error) {
-    callback(error);
-  }
-} 
-// Asynchronous updateFile function
-async function updateFileAsync(key, newData, callback) {
-  try {
-    const data = await readFileAsync(key);
-    Object.assign(data, newData);
-    if (newData[key] === '--nil--') {
-      delete data[key];
-    }
-    await writeFileAsync(key, data);
-    callback(null);
-  } catch (error) {
-    callback(error);
-  }
-}
-// Synchronous deleteFile function
-function deleteFile(key, callback) {
-  try {
-    fs.unlinkSync(`${key}.json`);
-    callback(null);
-  } catch (error) {
-    callback(error);
-  }
-}
-// Asynchronous deleteFile
-async function deleteFileAsync(key, callback) {
-  try {
-    await new Promise((resolve, reject) => {
-      fs.unlink(`${key}.json`, err => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-    callback(null);
-  } catch (error) {
-    callback(error);
-  }
-}
-// Synchronous writeFile
-function writeFile(key, data, callback) {
-  try {
-    fs.writeFileSync(`${key}.json`, JSON.stringify(data));
-    callback(null);
-  } catch (error) {
-    callback(error);
-  }
-}
-// Asynchronous writeFile
-async function writeFileAsync(key, data) {
-  try {
-    await new Promise((resolve, reject) => {
-      fs.writeFile(`${key}.json`, JSON.stringify(data), err => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-  } catch (error) {
-    throw error;
-  }
-}*/
-
-//nodes of servers
-//script de arranque em sistemas:
-//fork dos sistemas em nodejs
-//forever
-//swagger HOUST, Postman
-/*const { exec } = require('child_process')
-
-exec (ls -lh,(error,stdout,stderr) => {
-  if(error) {
-    console.error('error: ${error.message}');
-  }
-  if(stderr){
-    console.error('stderr: ${stderr}');
-    return;
-  }
-  console.log('stdout:\n$(stdout)');
-});*/
-
-// Defining backend servers
+module.exports = app;
