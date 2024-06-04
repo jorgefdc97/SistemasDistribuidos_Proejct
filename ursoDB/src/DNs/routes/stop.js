@@ -1,66 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../../logger'); // Adjust the path according to your structure
+const forever = require('forever');
+const logger = require('../../logger'); 
 
-// Simulated example cleanup functions
-function closeDatabaseConnections() {
-  return new Promise((resolve) => {
-    logger.info('Closing database connections...');
-    // Simulate async operation with setTimeout
-    setTimeout(() => {
-      logger.info('Database connections closed.');
+// Function to stop the data node using Forever
+function stopDataNode() {
+  return new Promise((resolve, reject) => {
+    logger.info('Stopping the data node...');
+
+    // Stop the current process using Forever
+    forever.stop().on('stop', () => {
+      logger.info('Data node has been stopped.');
       resolve();
-    }, 500);
+    }).on('error', (err) => {
+      logger.error('Error stopping the data node:', err.message);
+      reject(err);
+    });
   });
 }
 
-function stopBackgroundTasks() {
-  return new Promise((resolve) => {
-    logger.info('Stopping background tasks...');
-    // Simulate async operation with setTimeout
-    setTimeout(() => {
-      logger.info('Background tasks stopped.');
-      resolve();
-    }, 500);
-  });
-}
-
-function flushLogs() {
-  return new Promise((resolve) => {
-    logger.info('Flushing logs...');
-    // Simulate async operation with setTimeout
-    setTimeout(() => {
-      logger.info('Logs flushed.');
-      resolve();
-    }, 500);
-  });
-}
-
-// Function to stop the node gracefully
-async function stopNode() {
-  logger.info('Initiating graceful shutdown...');
-
+router.post('/', async (req, res) => {
   try {
-    await closeDatabaseConnections();
-    await stopBackgroundTasks();
-    await flushLogs();
-    logger.info('Cleanup completed. Stopping the node.');
-    process.exit(0); // Exit the process after cleanup
-  } catch (error) {
-    logger.error('Error during cleanup:', error.message);
-    process.exit(1); // Exit with error code
-  }
-}
+    logger.info('Received request to stop the data node');
+    res.json({ success: true, message: 'Data node is stopping' });
 
-router.post('/', (req, res) => {
-  try {
-    logger.info('Received request to stop the node');
-    res.json({ success: true, message: 'Node is stopping' });
-
-    // Call the stopNode function after sending the response
-    stopNode();
+    // Call the stopDataNode function after sending the response
+    await stopDataNode();
   } catch (error) {
-    logger.error('Error stopping the node:', error.message);
+    logger.error('Error stopping the data node:', error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

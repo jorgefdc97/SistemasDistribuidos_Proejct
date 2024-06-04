@@ -5,10 +5,11 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const logger = require('../../logger'); // Adjust the path according to your structure
-const config = JSON.parse(fs.readFileSync('configure.json', 'utf8'));
+const config = JSON.parse(fs.readFileSync('../etc/manel.json', 'utf8'));
+//const WAIT_TIME_AFTER_STOP = 5000;
 
 // Function to stop the reverse proxy
-function stopReverseProxy() {
+async function stopReverseProxy() {
   return new Promise((resolve, reject) => {
     logger.info('Stopping the reverse proxy...');
     forever.list(false, (err, processes) => {
@@ -27,6 +28,8 @@ function stopReverseProxy() {
         logger.info(`Comparing process path: ${procPath}`);
         return procPath === expectedPath;
       });
+
+      //new Promise(resolve => setTimeout(resolve, WAIT_TIME_AFTER_STOP));
 
       if (process) {
         logger.info('Found process to stop:', process);
@@ -50,7 +53,7 @@ async function stopDataNodes() {
   logger.info('Initiating shutdown of all data nodes...');
   
   // Get data node stop URLs from configuration
-  const dataNodes = config.DNs.flatMap(dn => dn.servers.map(server => `http://${server.host}:${server.port}/data-node/stop`));
+  const dataNodes = config.DNs.flatMap(dn => dn.servers.map(server => `http://${server.host}:${server.port}/stop`));
 
   try {
     const stopPromises = dataNodes.map(url => axios.post(url));
@@ -65,8 +68,11 @@ async function stopDataNodes() {
 // Function to stop both reverse proxy and data nodes
 async function stopAll() {
   try {
-    await stopReverseProxy();
+    logger.debug("HELLOOO!!!!!!!!!");
     await stopDataNodes();
+    logger.debug("FORAM-SE DN!!!!!!!!!");
+    await stopReverseProxy();
+    logger.debug("FOI-SE RP!!!!!!!!!");
     process.exit(0); // Exit the process after stopping everything
   } catch (error) {
     logger.error('Error during shutdown process:', error.message);

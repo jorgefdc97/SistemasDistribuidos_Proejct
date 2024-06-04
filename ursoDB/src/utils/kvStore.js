@@ -1,34 +1,31 @@
-// kvStore.js
-const store = {};
 
-const createKeyValuePair = (key, value) => {
-  store[key] = value;
-  return { key, value };
-};
+const kvStore = {
+  store: {},
 
-const readValueByKey = (key) => {
-  return store[key] || null;
-};
-
-const updateValueByKey = (key, value) => {
-  if (store[key]) {
-    store[key] = value;
+  createKeyValuePair: (key, value) => {
+    kvStore.store[key] = value;
     return { key, value };
-  }
-  return null;
+  },
+
+  readValueByKey: (key) => {
+    return kvStore.store[key] || null;
+  },
+
+  updateValueByKey: (key, value) => {
+    if (kvStore.store[key]) {
+      kvStore.store[key] = value;
+      return { key, value };
+    }
+    return null;
+  },
+
+  deleteKeyValuePair: (key) => {
+    if (kvStore.store[key]) {
+      delete kvStore.store[key];
+      return true;
+    }
+    return false;
+  },
 };
 
-const deleteKeyValuePair = (key) => {
-  if (store[key]) {
-    delete store[key];
-    return true;
-  }
-  return false;
-};
-
-module.exports = {
-  createKeyValuePair,
-  readValueByKey,
-  updateValueByKey,
-  deleteKeyValuePair
-};
+module.exports = kvStore;

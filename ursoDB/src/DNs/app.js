@@ -7,7 +7,7 @@ const axios = require('axios');
 const logger = require('../logger');
 const MyRaft = require('./MyRaft'); 
 const WinstonTransport = require('./winstonTransportLayer');
-const kvStore = require('../utils/kvStore'); 
+ 
 
 const app = express();
 app.use(bodyParser.json());
@@ -26,7 +26,8 @@ app.use('/status', statusRoute);
 app.use('/stop', stopRoute);
 
 // Load configuration
-const config = JSON.parse(fs.readFileSync('configure.json', 'utf8'));
+const configPath = path.resolve(__dirname, '../../etc/manel.json');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const nodeId = process.env.NODE_ID || 'node1';
 const nodeConfig = config.DNs.flatMap(dn => dn.servers).find(server => server.name === nodeId);
 
@@ -115,54 +116,6 @@ raft.on('follower', () => {
 
 raft.on('candidate', () => {
   logger.info(`Node ${nodeId} - I am a candidate`);
-});
-
-// Create a key-value pair
-app.post('/db/c', (req, res) => {
-  const { key, value } = req.body;
-  const result = kvStore.createKeyValuePair(key, value); // Use the kvStore module
-  logger.info(`Created key-value pair: ${key} - ${JSON.stringify(value)}`);
-  res.json(result);
-});
-
-// Read the value associated with a key
-app.get('/db/r/:key', (req, res) => {
-  const { key } = req.params;
-  const value = kvStore.readValueByKey(key); // Use the kvStore module
-  if (value !== null) {
-    logger.info(`Read value for key: ${key}`);
-    res.json(value);
-  } else {
-    logger.error(`Key not found: ${key}`);
-    res.status(404).send('Key not found');
-  }
-});
-
-// Update the value associated with a key
-app.put('/db/u/:key', (req, res) => {
-  const { key } = req.params;
-  const newValue = req.body;
-  const result = kvStore.updateValueByKey(key, newValue); // Use the kvStore module
-  if (result !== null) {
-    logger.info(`Updated value for key: ${key}`);
-    res.json(result);
-  } else {
-    logger.error(`Key not found: ${key}`);
-    res.status(404).send('Key not found');
-  }
-});
-
-// Delete a key-value pair
-app.delete('/db/d/:key', (req, res) => {
-  const { key } = req.params;
-  const success = kvStore.deleteKeyValuePair(key); // Use the kvStore module
-  if (success) {
-    logger.info(`Deleted key-value pair: ${key}`);
-    res.send('Key-value pair deleted');
-  } else {
-    logger.error(`Key not found: ${key}`);
-    res.status(404).send('Key not found');
-  }
 });
 
 // Start the server

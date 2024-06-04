@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Load configuration
-const configPath = path.resolve(__dirname, '../configure.json');
+const configPath = path.resolve(__dirname, '../../etc/manel.json');
 const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 const app = express();

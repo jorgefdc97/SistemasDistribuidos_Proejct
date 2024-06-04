@@ -1,48 +1,51 @@
-var express = require('express');
-var router = express.Router();
-const axios = require('axios');
-const logger = require('../../logger'); // Adjust the path to your logger
+const express = require('express');
+const router = express.Router();
+const fs = require('fs');
+const logger = require('../../logger');
 
-// Define data node master endpoints
-const dataNodeMasters = [
-  'http://localhost:3010', // dn00
-  'http://localhost:3020', // dn01
-  'http://localhost:3030', // dn02
-  'http://localhost:3040'  // dn03
-];
+// Function to get process uptime
+function getUpTime() {
+  const uptimeInMilliseconds = process.uptime() * 1000;
+  const days = Math.floor(uptimeInMilliseconds / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((uptimeInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((uptimeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((uptimeInMilliseconds % (1000 * 60)) / 1000);
 
-/* GET status listing. */
-router.get('/:id?', async (req, res) => {
-  try {
-    logger.info('Fetching system status from all data node masters');
+  // Get the date when the process started
+  const startDate = new Date(Date.now() - uptimeInMilliseconds);
+  const formattedDate = `${startDate.getFullYear()}-${(startDate.getMonth() + 1).toString().padStart(2, '0')}-${startDate.getDate().toString().padStart(2, '0')}`;
 
-    const statusPromises = dataNodeMasters.map(async (dataNode) => {
-      try {
-        // Send HTTP request to each data node master's status route
-        const response = await axios.get(`${dataNode}/status`);
-        logger.info(`Status from ${dataNode} received: ${JSON.stringify(response.data)}`);
-        return response.data; // Assuming data node status is returned in JSON format
-      } catch (error) {
-        logger.error(`Error fetching status from ${dataNode}: ${error.message}`);
-        throw error;
-      }
-    });
+  return {
+    days,
+    hours,
+    minutes,
+    seconds,
+    formattedDate
+  };
+}
 
-    // Wait for all requests to complete
-    const statuses = await Promise.all(statusPromises);
+// Function to get the master ID from the parent node in manel.json
+function getMasterIdFromParentNode(req) {
+  const configFilePath = '../etc/manel.json';
+  const config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
+  // Find the parent node based on the current host and port
+  const currentNode = config.DNs.find(node => node.servers.some(server => server.host === req.hostname && server.port === req.port));
+  // Retrieve the master ID from the parent node
+  return currentNode ? currentNode.master_id : 'Master not elected';
+}
 
-    // Aggregate system status
-    const systemStatus = {
-      dataNodeStatuses: statuses,
-      startTime: '',
-      uptime: ''
-    };
+// Route handler for /status endpoint
+router.get('/', async (req, res) => {
+  const upTime = getUpTime();
+  const masterId = getMasterIdFromParentNode(req);
+  const status = {
+    'alive since': upTime.formattedDate,
+    uptime: `${upTime.days} days : ${upTime.hours} hours : ${upTime.minutes} minutes : ${upTime.seconds} seconds`,
+    masterNode: masterId,
+    status: 'Online'
+  };
 
-    res.json(systemStatus);
-  } catch (error) {
-    logger.error('Error fetching system status:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+  res.json(status);
 });
 
 module.exports = router;
